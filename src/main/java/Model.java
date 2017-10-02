@@ -24,9 +24,9 @@ public class Model implements Subject{
 		observers.add(observer);
 	}
 	
-	public void notifyObservers(long chatId,String cachorrosData){
+	public void notifyObservers(long chatId,String data){
 		for(Observer observer:observers){
-			observer.update(chatId, cachorrosData);
+			observer.update(chatId, data);
 		}
 	}
 	

@@ -259,6 +259,15 @@ public class View implements Observer{
 						}
 						else {
 							String responseL [] = response.toLowerCase().replace(" ","").split(",");
+							try {
+								Integer.valueOf((String) responseL[2]);
+							}
+							catch(Exception e) {
+								bot.execute(new SendMessage(update.message().chat().id(),"Estrutura errada!"+
+										"\nDigite o nome do motorista, nome do pet shop e o raio de pesquisa (km), respectivamente (separado por vírgula)"+
+										"\nOu voltar para retornar a ala de pets"));
+								continue;
+							}
 							if (responseL.length!=3) {
 								bot.execute(new SendMessage(update.message().chat().id(),"Estrutura errada!"+
 								"\nDigite o nome do motorista, nome do pet shop e o raio de pesquisa (km), respectivamente (separado por vírgula)"+
@@ -342,8 +351,8 @@ public class View implements Observer{
 		this.controllerSearch.search(objects, update);
 	}
 	
-	public void update(long chatId, String studentsData){
-		sendResponse = bot.execute(new SendMessage(chatId, studentsData));
+	public void update(long chatId, String data){
+		sendResponse = bot.execute(new SendMessage(chatId, data));
 	}
 	
 	public void sendTypingMessage(Update update){

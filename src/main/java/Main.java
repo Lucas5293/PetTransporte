@@ -21,7 +21,7 @@ public class Main {
 	}
 	public static double calcula(double lat1, double lon1, double lat2, double lon2) {
 		
-		int R = 6371; // metres
+		int R = 6371; // meters
 		double φ1 = Math.toRadians(lat1);
 		double φ2 = Math.toRadians(lat2);
 		double Δφ = Math.toRadians(lat2-lat1);

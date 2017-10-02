@@ -3,6 +3,6 @@ public interface Subject {
 	
 	public void registerObserver(Observer observer);
 	
-	public void notifyObservers(long chatId, String cachorrosData);
+	public void notifyObservers(long chatId, String data);
 
 }
