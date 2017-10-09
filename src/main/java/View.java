@@ -95,6 +95,7 @@ public class View implements Observer{
 								modo.put(id, "pet/2"); 
 								setControllerRegister(new ControllerRegisterCachorro(model, this));
 								setControllerSearch(new ControllerSearchCachorro(model, this));
+								callControllerSearch(null, update, 0);
 								bot.execute(new SendMessage(update.message().chat().id(),"Você tem certeza que deseja cancelar a busca?"));
 								bot.execute(new SendMessage(update.message().chat().id(),"Ou voltar para retornar a ala de pets"));
 								break;
@@ -127,6 +128,7 @@ public class View implements Observer{
 							case "2": {
 								modo.put(id, "motorista/2");
 								setControllerSearch(new ControllerSearchCachorro(model, this));
+								callControllerSearch(null, update, 2);
 								break;
 							}
 							case "3": { 
@@ -198,6 +200,8 @@ public class View implements Observer{
 							bot.execute(new SendMessage(update.message().chat().id(),"Para finalizar envie sua localização, através do chat"));
 							modo.put(id, "pet/1/1/1");
 							getLocalizacao = true;
+							
+							
 							
 						}				
 						else
@@ -348,7 +352,10 @@ public class View implements Observer{
 			this.controllerRegister.remove(objects, update);
 	}
 	public void callControllerSearch(Object objects[],Update update, int mode){
-		this.controllerSearch.search(objects, update);
+		if (mode==0)
+			this.controllerSearch.searchId(update);
+		else if (mode==2)
+			this.controllerSearch.searchDist(update);
 	}
 	
 	public void update(long chatId, String data){

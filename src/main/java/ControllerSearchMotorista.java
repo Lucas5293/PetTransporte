@@ -10,9 +10,14 @@ public class ControllerSearchMotorista implements ControllerSearch{
 		this.view = view; //connection Controller -> View
 	}
 	
-	public void search(Object objects[], Update update){
-		//view.sendTypingMessage(update);
-		model.searchMotorista(objects, update);
+	public void searchId(Update update){
+		view.sendTypingMessage(update);
+		model.searchMotoristaId(update);
+	}
+	
+	public void searchDist(Update update) {
+		view.sendTypingMessage(update);
+		
 	}
 
 }

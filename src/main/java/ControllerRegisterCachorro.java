@@ -23,6 +23,6 @@ public class ControllerRegisterCachorro implements ControllerRegister{
 	}
 	public void remove(Object objects[], Update update){
 		view.sendTypingMessage(update);
-		model.searchCachorro(objects, update);
+		//model.searchCachorro(objects, update);
 	}
 }

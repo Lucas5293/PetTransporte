@@ -11,9 +11,15 @@ public class ControllerSearchCachorro implements ControllerSearch{
 		this.view = view; //connection Controller -> View
 	}
 	
-	public void search(Object objects[], Update update){
+	public void searchId(Update update){
 		view.sendTypingMessage(update);
-		model.searchCachorro(objects, update);
+		model.searchCachorroId(update);
+	}
+	public void searchDist(Update update) {
+		view.sendTypingMessage(update);
+		view.sendTypingMessage(update);
+		Motorista motorista = model.searchMotoristaIdGet(update);
+		model.searchCachorroDist(update, motorista);
 	}
 
 }

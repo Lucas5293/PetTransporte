@@ -8,6 +8,8 @@ public class Model implements Subject{
 	
 	private ArrayList<Cachorro> cachorros = new ArrayList<Cachorro>();
 	private ArrayList<Motorista> motoristas = new ArrayList<Motorista>();
+	private Calculo calculo=new Calculo();
+	
 	
 	private static Model uniqueInstance;
 	
@@ -30,6 +32,10 @@ public class Model implements Subject{
 		}
 	}
 	
+	public Calculo getCalculo() {
+		return calculo;
+	}
+	
 	public void addCachorro(Cachorro cachorro){
 		this.cachorros.add(cachorro);
 		System.out.println("\nNovo dog: \n"+cachorro.toString());
@@ -40,34 +46,56 @@ public class Model implements Subject{
 		System.out.println("\nNovo motorista: \n"+motorista.toString());
 	}
 	
-	public void searchCachorro(Object objects[], Update update){
+	public Cachorro searchCachorroIdGet(Update update) {
+		for(Cachorro cachorro: cachorros)
+			if(cachorro.getId() == update.message().chat().id())
+				return cachorro;
+		return null;
+	}
+	public void searchCachorroId(Update update){
 		long cachorrosData = -1;
-		for(Cachorro cachorro: cachorros){
-			if(cachorro.getNome().equals((String) objects[0])){
+		for(Cachorro cachorro: cachorros)
+			if(cachorro.getId() == update.message().chat().id())
 				cachorrosData = cachorro.getId();
+		
+		if(cachorrosData != -1)
+			this.notifyObservers(update.message().chat().id(), String.valueOf(cachorrosData));
+		else 
+			this.notifyObservers(update.message().chat().id(), "Cachorro não encontrado");
+	}
+	public void searchCachorroDist(Update update, Motorista motorista) {
+		int index=1;
+		for(Cachorro cachorro: cachorros) {
+			System.out.println(getCalculo().distanciaEntrePontos(cachorro.getLatitude(), cachorro.getLongitude(), 
+				motorista.getLatitude(), motorista.getLongitude()));
+			if (getCalculo().distanciaEntrePontos(cachorro.getLatitude(), cachorro.getLongitude(), 
+				motorista.getLatitude(), motorista.getLongitude())<=motorista.getRaio()) {
+					this.notifyObservers(update.message().chat().id(),index+" "+cachorro.toString());
+					index+=1;
 			}
 		}
-		
-		if(cachorrosData != -1){
-			this.notifyObservers(update.message().chat().id(), String.valueOf(cachorrosData));
-		} else {
-			this.notifyObservers(update.message().chat().id(), "Cachorro não encontrado");
-		}
-		
+		if (index==1)
+			this.notifyObservers(update.message().chat().id(),"Não foram encontrados pets em seu raio de pesquisa");
+			
 	}
 	
-	public void searchMotorista(Object objects[], Update update){
+	public Motorista searchMotoristaIdGet(Update update) {
+		for(Motorista motorista: motoristas)
+			if(motorista.getId() == update.message().chat().id())
+				return motorista;
+		return null;
+	}
+	
+	public void searchMotoristaId(Update update){
 		long motoristasData = -1;
-		for(Motorista motorista: motoristas){
-			if(motorista.getNome().equals((String) objects[0])) 
+		for(Motorista motorista: motoristas)
+			if(motorista.getId() == update.message().chat().id()) 
 				motoristasData = motorista.getId();
-		}
 		
-		if(motoristasData != -1){
+		if(motoristasData != -1)
 			this.notifyObservers(update.message().chat().id(), String.valueOf(motoristasData));
-		} else {
+		else 
 			this.notifyObservers(update.message().chat().id(), "Motorista not found");
-		}
 	}
 
 }
