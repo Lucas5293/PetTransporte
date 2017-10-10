@@ -87,17 +87,14 @@ public class View implements Observer{
 							case "1": { 
 								modo.put(id, "pet/1");
 								setControllerRegister(new ControllerRegisterCachorro(model, this));
-								bot.execute(new SendMessage(update.message().chat().id(),"Digite o nome de identificação do pet, espécie e raça, respectivamente (separado por vírgula)"));
-								bot.execute(new SendMessage(update.message().chat().id(),"Ou voltar para retornar a ala de pets"));
+								bot.execute(new SendMessage(update.message().chat().id(),"Digite o nome de identificação do pet, espécie e raça, respectivamente (separado por vírgula)\n"+
+								"Ou voltar para retornar a ala de pets"));
 								break;
 							}
 							case "2": { 
 								modo.put(id, "pet/2"); 
-								setControllerRegister(new ControllerRegisterCachorro(model, this));
-								setControllerSearch(new ControllerSearchCachorro(model, this));
-								callControllerSearch(null, update, 0);
-								bot.execute(new SendMessage(update.message().chat().id(),"Você tem certeza que deseja cancelar a busca?"));
-								bot.execute(new SendMessage(update.message().chat().id(),"Ou voltar para retornar a ala de pets"));
+								bot.execute(new SendMessage(update.message().chat().id(),"Digite sim caso queira cancelar a busca\n"+
+										"Ou voltar para retornar a ala de pets"));
 								break;
 							}
 							case "3": {
@@ -237,14 +234,19 @@ public class View implements Observer{
 					}
 					else if(modo.get(id).equals("pet/2")){
 						String response = update.message().text();
-						if (response.toLowerCase().equals("voltar")) {
+						if (response.toLowerCase().equals("sim")) {
+							setControllerSearch(new ControllerSearchCachorro(model, this));
+							callControllerSearch(null, update, 0);
+							
+						}
+						else if (response.toLowerCase().equals("voltar")) {
 							telaPet(update);
 							modo.put(id, "pet");
 						}		
 						else {
 							bot.execute(new SendMessage(update.message().chat().id(),"Digite uma opção válida"));
-							bot.execute(new SendMessage(update.message().chat().id(),"Você tem certeza que deseja cancelar a busca?"));
-							bot.execute(new SendMessage(update.message().chat().id(),"Ou voltar para retornar a ala de pets"));
+							bot.execute(new SendMessage(update.message().chat().id(),"Digite sim caso queira cancelar a busca\n"+
+									"Ou voltar para retornar a ala de pets"));
 						}
 							
 					}
