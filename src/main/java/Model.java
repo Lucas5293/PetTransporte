@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 
 import com.pengrad.telegrambot.model.Update;
@@ -8,8 +9,10 @@ public class Model implements Subject{
 	
 	private ArrayList<Cachorro> cachorros = new ArrayList<Cachorro>();
 	private ArrayList<Motorista> motoristas = new ArrayList<Motorista>();
-	private Calculo calculo=new Calculo();
 	
+	
+	
+	private Calculo calculo=new Calculo();	
 	
 	private static Model uniqueInstance;
 	
@@ -63,20 +66,20 @@ public class Model implements Subject{
 		else 
 			this.notifyObservers(update.message().chat().id(), "Cachorro não encontrado");
 	}
-	public void searchCachorroDist(Update update, Motorista motorista) {
+	public ArrayList<Cachorro> searchCachorroDist(Update update, Motorista motorista) {
 		int index=1;
+		ArrayList<Cachorro> retorno = new ArrayList<>();
 		for(Cachorro cachorro: cachorros) {
-			System.out.println(getCalculo().distanciaEntrePontos(cachorro.getLatitude(), cachorro.getLongitude(), 
-				motorista.getLatitude(), motorista.getLongitude()));
-			if (getCalculo().distanciaEntrePontos(cachorro.getLatitude(), cachorro.getLongitude(), 
-				motorista.getLatitude(), motorista.getLongitude())<=motorista.getRaio()) {
+			if (getCalculo().distanciaEntrePontos(cachorro.getLatitude(), cachorro.getLongitude(),
+			motorista.getLatitude(), motorista.getLongitude())<=motorista.getRaio()) {
 					this.notifyObservers(update.message().chat().id(),index+" "+cachorro.toString());
 					index+=1;
+					retorno.add(cachorro);
 			}
 		}
 		if (index==1)
 			this.notifyObservers(update.message().chat().id(),"Não foram encontrados pets em seu raio de pesquisa");
-			
+		return retorno;
 	}
 	
 	public Motorista searchMotoristaIdGet(Update update) {

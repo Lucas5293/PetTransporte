@@ -1,3 +1,4 @@
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -312,6 +313,9 @@ public class View implements Observer{
 						telaMotorista(update);
 						
 					}
+					else if(modo.get(id).equals("motorista/2")){
+						bot.execute(new SendMessage(update.message().chat().id(),"Digite o número do pet que deseja buscar"));					
+					}
 					else {
 						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Digite pet ou motorista para selecionar a opção desejada"));
 					}
@@ -343,7 +347,7 @@ public class View implements Observer{
 		bot.execute(new SendMessage(update.message().chat().id(),"1 - Cadastrar motorista"+
 				"\n2 - Ver pets próximos"+
 				"\n3 - Gerenciar pets"+
-				"\n4 - Alterar raio de procura de pets"+
+				"\n4 - Atualizar localização"+
 				"\nVoltar - Para voltar as opções iniciais"));
 	}
 	

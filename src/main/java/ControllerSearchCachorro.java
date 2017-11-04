@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.pengrad.telegrambot.model.Update;
 
 public class ControllerSearchCachorro implements ControllerSearch{
@@ -17,9 +19,10 @@ public class ControllerSearchCachorro implements ControllerSearch{
 	}
 	public void searchDist(Update update) {
 		view.sendTypingMessage(update);
-		view.sendTypingMessage(update);
 		Motorista motorista = model.searchMotoristaIdGet(update);
-		model.searchCachorroDist(update, motorista);
+		ArrayList<Cachorro> caes = model.searchCachorroDist(update, motorista);
+		if (caes.size()!=0)
+			view.modo.put(update.message().chat().id(), "motorista/2/"+caes.size());	
 	}
 
 }
