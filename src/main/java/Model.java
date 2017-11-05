@@ -10,7 +10,7 @@ public class Model implements Subject{
 	private ArrayList<Cachorro> cachorros = new ArrayList<Cachorro>();
 	private ArrayList<Motorista> motoristas = new ArrayList<Motorista>();
 	
-	
+	private BuscaPet buscaPet = new BuscaPet();	
 	
 	private Calculo calculo=new Calculo();	
 	
@@ -55,6 +55,7 @@ public class Model implements Subject{
 				return cachorro;
 		return null;
 	}
+	
 	public void searchCachorroId(Update update){
 		long cachorrosData = -1;
 		for(Cachorro cachorro: cachorros)
@@ -66,6 +67,7 @@ public class Model implements Subject{
 		else 
 			this.notifyObservers(update.message().chat().id(), "Cachorro não encontrado");
 	}
+	
 	public ArrayList<Cachorro> searchCachorroDist(Update update, Motorista motorista) {
 		int index=1;
 		ArrayList<Cachorro> retorno = new ArrayList<>();
@@ -99,6 +101,14 @@ public class Model implements Subject{
 			this.notifyObservers(update.message().chat().id(), String.valueOf(motoristasData));
 		else 
 			this.notifyObservers(update.message().chat().id(), "Motorista not found");
+	}
+	
+	public void addDisponiveis(long id, ArrayList<Cachorro> caes) {
+		buscaPet.setDisponiveis(id, caes);
+	}
+	
+	public ArrayList<Cachorro> getDisponiveis(long id){
+		return buscaPet.getDisponiveis(id);
 	}
 
 }

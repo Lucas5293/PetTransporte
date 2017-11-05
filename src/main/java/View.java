@@ -32,6 +32,7 @@ public class View implements Observer{
 	
 	ControllerSearch controllerSearch; //Strategy Pattern -- connection View -> Controller
 	ControllerRegister controllerRegister; //Strategy Pattern -- connection View -> Controller
+	ControllerBuscaPet controllerBuscaPet;
 	
 	Map<Long, String> modo = new HashMap<Long, String>();
 	boolean getLocalizacao = false;
@@ -313,10 +314,20 @@ public class View implements Observer{
 						telaMotorista(update);
 						
 					}
-					else if(modo.get(id).equals("motorista/2")){
-						bot.execute(new SendMessage(update.message().chat().id(),"Digite o número do pet que deseja buscar"));					
+					else if(modo.get(id).substring(0,11).equals("motorista/2")){
+						System.out.println(modo.get(id).substring(0,11));
+						System.out.println(modo.get(id).substring(12));
+						if (Integer.valueOf(update.message().text())<=Integer.valueOf(modo.get(id).substring(12))
+								&& Integer.valueOf(update.message().text())>0) {
+							controllerBuscaPet = new ControllerBuscaPet(model,this);
+							controllerBuscaPet.buscarCao(id,Integer.valueOf(update.message().text()));
+						}
+						else {
+							bot.execute(new SendMessage(update.message().chat().id(),"Erro: digite o numero correspondente ao pet que deseja buscar"));
+						}
 					}
 					else {
+						System.out.println(modo.get(id).substring(0,10));
 						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Digite pet ou motorista para selecionar a opção desejada"));
 					}
 				}catch(Exception e) {

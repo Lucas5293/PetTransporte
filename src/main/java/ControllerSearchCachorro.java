@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 
 public class ControllerSearchCachorro implements ControllerSearch{
 	
@@ -21,8 +22,10 @@ public class ControllerSearchCachorro implements ControllerSearch{
 		view.sendTypingMessage(update);
 		Motorista motorista = model.searchMotoristaIdGet(update);
 		ArrayList<Cachorro> caes = model.searchCachorroDist(update, motorista);
+		model.addDisponiveis(update.message().chat().id(), caes);
 		if (caes.size()!=0)
-			view.modo.put(update.message().chat().id(), "motorista/2/"+caes.size());	
+			view.modo.put(update.message().chat().id(), "motorista/2/"+caes.size());
+		view.bot.execute(new SendMessage(update.message().chat().id(),"Digite o número do pet que deseja buscar"));
 	}
 
 }
