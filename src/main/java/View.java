@@ -320,7 +320,7 @@ public class View implements Observer{
 						if (Integer.valueOf(update.message().text())<=Integer.valueOf(modo.get(id).substring(12))
 								&& Integer.valueOf(update.message().text())>0) {
 							controllerBuscaPet = new ControllerBuscaPet(model,this);
-							controllerBuscaPet.buscarCao(id,Integer.valueOf(update.message().text()));
+							controllerBuscaPet.buscarCao(update,id,Integer.valueOf(update.message().text()));
 						}
 						else {
 							bot.execute(new SendMessage(update.message().chat().id(),"Erro: digite o numero correspondente ao pet que deseja buscar"));
