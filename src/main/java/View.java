@@ -99,10 +99,6 @@ public class View implements Observer{
 										"Ou voltar para retornar a ala de pets"));
 								break;
 							}
-							case "3": {
-								modo.put(id, "pet/3");
-								break;
-							}
 							case "voltar": {
 								modo.put(id, "");
 								telaInicial(update);
@@ -237,9 +233,10 @@ public class View implements Observer{
 					else if(modo.get(id).equals("pet/2")){
 						String response = update.message().text();
 						if (response.toLowerCase().equals("sim")) {
-							setControllerSearch(new ControllerSearchCachorro(model, this));
-							callControllerSearch(null, update, 0);
-							
+							controllerBuscaPet = new ControllerBuscaPet(model,this);
+							controllerBuscaPet.cancelarCaoPet(id);
+							setControllerRegister(new ControllerRegisterCachorro(model, this));
+							callControllerSearch(null, update, 1);
 						}
 						else if (response.toLowerCase().equals("voltar")) {
 							telaPet(update);
@@ -347,17 +344,17 @@ public class View implements Observer{
 				"busque seu animal, digite pet"+
 				"\n- Caso contrário, digite motorista para acessar as opções"));
 	}
+	
 	public void telaPet(Update update) {
 		bot.execute(new SendMessage(update.message().chat().id(),"1 - Solicitar busca do pet"+
 			"\n2 - Cancelar busca do pet"+
-			"\n3 - Ver status do serviço solicitado"+
 			"\nVoltar - Para voltar as opções iniciais"));
 	}
 	
 	public void telaMotorista(Update update) {
 		bot.execute(new SendMessage(update.message().chat().id(),"1 - Cadastrar motorista"+
 				"\n2 - Ver pets próximos"+
-				"\n3 - Gerenciar pets"+
+				"\n3 - Cancelar busca do pet"+
 				"\n4 - Atualizar localização"+
 				"\nVoltar - Para voltar as opções iniciais"));
 	}
@@ -366,7 +363,7 @@ public class View implements Observer{
 		if (mode==0)
 			this.controllerRegister.add(objects, update);
 		else if (mode==1)
-			this.controllerRegister.remove(objects, update);
+			this.controllerRegister.remove(update);
 	}
 	public void callControllerSearch(Object objects[],Update update, int mode){
 		if (mode==0)

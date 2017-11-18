@@ -48,6 +48,13 @@ public class Model implements Subject{
 		this.motoristas.add(motorista);
 		System.out.println("\nNovo motorista: \n"+motorista.toString());
 	}
+	public void removeCachorro(Cachorro cachorro){
+		this.cachorros.remove(cachorro);
+	}
+	
+	public void removeMotorista(Motorista motorista){
+		this.motoristas.remove(motorista);
+	}
 	
 	public Cachorro searchCachorroIdGet(Update update) {
 		for(Cachorro cachorro: cachorros)
@@ -103,12 +110,10 @@ public class Model implements Subject{
 			this.notifyObservers(update.message().chat().id(), "Motorista not found");
 	}
 	
-	public void addDisponiveis(long id, ArrayList<Cachorro> caes) {
-		buscaPet.setDisponiveis(id, caes);
+	public BuscaPet getBuscaPet() {
+		return buscaPet;
 	}
 	
-	public ArrayList<Cachorro> getDisponiveis(long id){
-		return buscaPet.getDisponiveis(id);
-	}
+
 
 }

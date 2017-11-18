@@ -21,8 +21,9 @@ public class ControllerRegisterCachorro implements ControllerRegister{
 						(float) objects[4],
 						(float) objects[5]));
 	}
-	public void remove(Object objects[], Update update){
+	public void remove(Update update){
 		view.sendTypingMessage(update);
-		//model.searchCachorro(objects, update);
+		model.removeCachorro(model.searchCachorroIdGet(update));
+		view.update(update.updateId(), "Registro do pet excluido");
 	}
 }

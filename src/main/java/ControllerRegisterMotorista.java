@@ -19,8 +19,9 @@ public class ControllerRegisterMotorista implements ControllerRegister{
 					(float) objects[3],
 					(float) objects[4]));
 	}
-	public void remove(Object objects[], Update update){
+	public void remove(Update update){
 		view.sendTypingMessage(update);
-		//model.searchCachorro(objects, update);
+		model.removeMotorista(model.searchMotoristaIdGet(update));
+		view.update(update.updateId(), "Registro do motorista excluido");
 	}
 }
