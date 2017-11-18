@@ -86,6 +86,16 @@ public class Cachorro {
 				"\nLatitude: "+getLatitude()+
 				"\nLongitude: "+getLongitude();
 	}
+	public Object[] toStringWithLocation() {
+		Object s [] = {
+				"Id: " + getId() + 
+				"\nNome: "+getNome()+
+				"\nEspecie: "+getEspecie()+
+				"\nRaça: "+getRaca()+
+				"\nServico: "+getServico(), getLatitude(), getLongitude()};
+		return s;
+	}
+	
 	
 	
 	

@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.model.request.ChatAction;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendChatAction;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendLocation;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -89,6 +90,7 @@ public class View implements Observer{
 							case "1": { 
 								modo.put(id, "pet/1");
 								setControllerRegister(new ControllerRegisterCachorro(model, this));
+								callControllerRegister(null, update, 1);
 								bot.execute(new SendMessage(update.message().chat().id(),"Digite o nome de identificação do pet, espécie e raça, respectivamente (separado por vírgula)\n"+
 								"Ou voltar para retornar a ala de pets"));
 								break;
@@ -116,6 +118,7 @@ public class View implements Observer{
 							case "1": {
 								modo.put(id, "motorista/1");
 								setControllerRegister(new ControllerRegisterMotorista(model, this));
+								callControllerRegister(null, update, 1);
 								bot.execute(new SendMessage(update.message().chat().id(),"Digite o nome do motorista, nome do pet shop e o raio de pesquisa (km), respectivamente (separado por vírgula)"+
 										"\nOu voltar para retornar a ala de pets"));
 								break;
@@ -128,7 +131,15 @@ public class View implements Observer{
 							}
 							case "3": { 
 								modo.put(id, "motorista/3");
-								setControllerRegister(new ControllerRegisterMotorista(model, this));
+								bot.execute(new SendMessage(update.message().chat().id(),"Digite sim caso queira cancelar a busca\n"+
+										"Ou voltar para retornar a ala de motorista"));
+								break;
+								}
+							case "4": { 
+								modo.put(id, "motorista/4");
+								bot.execute(new SendMessage(update.message().chat().id(),"Mande sua localização atual, para atualizar os clientes\n"+
+										"Ou voltar para retornar a ala de motorista"));
+								getLocalizacao=true;
 								break;
 								}
 							case "voltar": {
@@ -147,6 +158,8 @@ public class View implements Observer{
 					}else if(!getLocalizacao && update.message().text().toLowerCase().equals("motorista")){
 						telaMotorista(update);
 						modo.put(id, "motorista");
+						
+					}else if(!getLocalizacao && update.message().text().toLowerCase().equals("debug")){
 						
 					}
 					
@@ -236,7 +249,9 @@ public class View implements Observer{
 							controllerBuscaPet = new ControllerBuscaPet(model,this);
 							controllerBuscaPet.cancelarCaoPet(id);
 							setControllerRegister(new ControllerRegisterCachorro(model, this));
-							callControllerSearch(null, update, 1);
+							callControllerRegister(null, update, 1);
+							modo.put(id, "pet");
+							telaPet(update);
 						}
 						else if (response.toLowerCase().equals("voltar")) {
 							telaPet(update);
@@ -311,20 +326,58 @@ public class View implements Observer{
 						telaMotorista(update);
 						
 					}
-					else if(modo.get(id).substring(0,11).equals("motorista/2")){
-						System.out.println(modo.get(id).substring(0,11));
-						System.out.println(modo.get(id).substring(12));
-						if (Integer.valueOf(update.message().text())<=Integer.valueOf(modo.get(id).substring(12))
+					else if(modo.get(id).length()>=11 && modo.get(id).substring(0,11).equals("motorista/2")){
+						if (update.message().text().toLowerCase().equals("voltar")) {
+							telaMotorista(update);
+							modo.put(id, "motorista");
+						}
+						else if (Integer.valueOf(update.message().text())<=Integer.valueOf(modo.get(id).substring(12))
 								&& Integer.valueOf(update.message().text())>0) {
 							controllerBuscaPet = new ControllerBuscaPet(model,this);
 							controllerBuscaPet.buscarCao(update,id,Integer.valueOf(update.message().text()));
+							modo.put(id, "motorista");
+							telaMotorista(update);
 						}
 						else {
-							bot.execute(new SendMessage(update.message().chat().id(),"Erro: digite o numero correspondente ao pet que deseja buscar"));
+							bot.execute(new SendMessage(update.message().chat().id(),"Erro: digite o numero correspondente ao pet que deseja buscar"+
+									"\nOu voltar para retornar a ala de pets"));
+						}
+					}
+					else if(modo.get(id).equals("motorista/3")){
+						String response = update.message().text();
+						if (response.toLowerCase().equals("sim")) {
+							controllerBuscaPet = new ControllerBuscaPet(model,this);
+							controllerBuscaPet.cancelarCaoMotorista(id);
+							modo.put(id, "motorista");
+							telaMotorista(update);
+						}
+						else if (response.toLowerCase().equals("voltar")) {
+							telaMotorista(update);
+							modo.put(id, "motorista");
+						}		
+						else {
+							bot.execute(new SendMessage(update.message().chat().id(),"Digite uma opção válida"));
+							bot.execute(new SendMessage(update.message().chat().id(),"Digite sim caso queira cancelar a busca\n"+
+									"Ou voltar para retornar a ala de motorista"));
+						}
+							
+					}
+					else if (modo.get(id).equals("motorista/4")) {
+						try {
+							Location localizacao = update.message().location();
+							float lat = localizacao.latitude();
+							float lon = localizacao.longitude();
+							getLocalizacao=false;
+							controllerBuscaPet = new ControllerBuscaPet(model,this);
+							controllerBuscaPet.atualizaLocalizacao(update, lat, lon);
+							telaMotorista(update);
+							modo.put(id, "motorista");
+						}catch(Exception e) {
+							bot.execute(new SendMessage(update.message().chat().id(),"Você não enviou uma localização\nEnvie sua localização, através do chat"));
+							continue;
 						}
 					}
 					else {
-						System.out.println(modo.get(id).substring(0,10));
 						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Digite pet ou motorista para selecionar a opção desejada"));
 					}
 				}catch(Exception e) {
@@ -375,7 +428,9 @@ public class View implements Observer{
 	public void update(long chatId, String data){
 		sendResponse = bot.execute(new SendMessage(chatId, data));
 	}
-	
+	public void updateLocation(long chatId, float lat, float lon) {
+		sendResponse = bot.execute(new SendLocation(chatId, lat, lon));		
+	}
 	public void sendTypingMessage(Update update){
 		baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
 	}

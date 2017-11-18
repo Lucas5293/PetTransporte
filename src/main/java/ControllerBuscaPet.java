@@ -22,16 +22,19 @@ public class ControllerBuscaPet implements ControllerBusca {
 	
 	public void cancelarCaoMotorista(long motorista) {
 		long cao = model.getBuscaPet().cancelaBuscaMotorista(motorista);
-		
 		view.bot.execute(new SendMessage(cao,"O motorista cancelou a busca de teu pet!"));
 		view.bot.execute(new SendMessage(motorista,"Você cancelou a busca do pet"));
 	}
 	
 	public void cancelarCaoPet(long cao) {
 		long motorista = model.getBuscaPet().cancelaBuscaCachorro(cao);
-		
 		view.bot.execute(new SendMessage(motorista,"O cliente cancelou a busca do pet!"));
 		view.bot.execute(new SendMessage(cao,"Você cancelou a busca do pet"));
 		
+	}
+	
+	public void atualizaLocalizacao(Update update, float lat, float lon) {
+		model.getBuscaPet().atualizaLocalizacao(update.message().chat().id(), lat, lon, view);
+		view.bot.execute(new SendMessage(update.message().chat().id(),"A localização foi atualizada para todos os clientes"));
 	}
 }

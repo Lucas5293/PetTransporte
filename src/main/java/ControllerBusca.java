@@ -4,4 +4,5 @@ public interface ControllerBusca {
 	public void buscarCao(Update update, long motorista, int cao);
 	public void cancelarCaoMotorista(long motorista);
 	public void cancelarCaoPet(long motorista);
+	public void atualizaLocalizacao(Update update, float lat, float lon);
 }

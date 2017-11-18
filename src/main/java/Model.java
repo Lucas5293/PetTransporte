@@ -7,10 +7,10 @@ public class Model implements Subject{
 	
 	private ArrayList<Observer> observers = new ArrayList<Observer>();
 	
-	private ArrayList<Cachorro> cachorros = new ArrayList<Cachorro>();
-	private ArrayList<Motorista> motoristas = new ArrayList<Motorista>();
+	public ArrayList<Cachorro> cachorros = new ArrayList<Cachorro>();
+	public ArrayList<Motorista> motoristas = new ArrayList<Motorista>();
 	
-	private BuscaPet buscaPet = new BuscaPet();	
+	private BuscaPet buscaPet = new BuscaPet(this);	
 	
 	private Calculo calculo=new Calculo();	
 	
@@ -34,6 +34,12 @@ public class Model implements Subject{
 			observer.update(chatId, data);
 		}
 	}
+	public void notifyObservers(long chatId,float lat, float lon){
+		for(Observer observer:observers){
+			observer.updateLocation(chatId, lat, lon);
+		}
+	}
+	
 	
 	public Calculo getCalculo() {
 		return calculo;
@@ -78,10 +84,16 @@ public class Model implements Subject{
 	public ArrayList<Cachorro> searchCachorroDist(Update update, Motorista motorista) {
 		int index=1;
 		ArrayList<Cachorro> retorno = new ArrayList<>();
+		
+		if (searchMotoristaIdGet(update)==null)
+			return null;
+		
 		for(Cachorro cachorro: cachorros) {
 			if (getCalculo().distanciaEntrePontos(cachorro.getLatitude(), cachorro.getLongitude(),
 			motorista.getLatitude(), motorista.getLongitude())<=motorista.getRaio()) {
-					this.notifyObservers(update.message().chat().id(),index+" "+cachorro.toString());
+					Object descri [] = cachorro.toStringWithLocation();
+					this.notifyObservers(update.message().chat().id(),index+" "+descri[0]);
+					this.notifyObservers(update.message().chat().id(), (float) descri[1], (float) descri[2]);
 					index+=1;
 					retorno.add(cachorro);
 			}
