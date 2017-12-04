@@ -1,5 +1,9 @@
 # PetTransporte
 
+## Grupo
+1. Lucas Augusto de Souza
+2. Raphael Toledo dos Reis
+
 ## Diagrama de classes
 ![Alt text](prints/diagrama.png)
 
